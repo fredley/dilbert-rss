@@ -25,8 +25,10 @@ def getDetails(url):
     return results
 
 url = 'http://dilbert.com'
+page = urllib2.urlopen(url).read()
+soup = BeautifulSoup(page)
+nextUrl = url + soup.findAll('div', {'class': 'STR_Image' })[0].find('a')['href']
 strips = []
-nextUrl = url
 
 for i in range(0,10):
     details = getDetails(nextUrl)
