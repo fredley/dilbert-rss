@@ -12,7 +12,7 @@ def getDetails(url, baseURL):
     page = urllib2.urlopen(url).read()
     soup = BeautifulSoup(page)
     date = soup.findAll('div', {'class': 'STR_DateStrip'})[0].text
-    img = soup.findAll('div', {'class': 'STR_Image' })[0].find('img')['src'].replace(‘strip.gif’,'strip.zoom.gif’)
+    img = soup.findAll('div', {'class': 'STR_Image' })[0].find('img')['src'].replace('strip.gif','strip.zoom.gif')
     results = {}
     results['item'] = PyRSS2Gen.RSSItem(
         title = 'Comic for ' + date,
