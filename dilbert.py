@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Dilbert RSS Feed Generator
 Requirements: BeautifulSoup, PyRSS2Gen
