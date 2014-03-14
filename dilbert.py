@@ -7,7 +7,7 @@ http://github.com/fredley/dilbert-rss
 
 """
 
-import urllib2, datetime, PyRSS2Gen
+import urllib2, datetime, sys, PyRSS2Gen
 from BeautifulSoup import BeautifulSoup
 
 def getDetails(url, baseURL):
@@ -45,5 +45,9 @@ rss = PyRSS2Gen.RSS2(
     lastBuildDate = datetime.datetime.now(),
     items = strips)
 
-rss.write_xml(open("dilbert.xml", "w"))
+if len(sys.argv) > 1:
+    outfile = sys.argv[1]
+else:
+    outfile = "dilbert.xml"
+rss.write_xml(open(outfile, "w"))
 
