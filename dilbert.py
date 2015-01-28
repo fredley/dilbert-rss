@@ -7,29 +7,32 @@ http://github.com/fredley/dilbert-rss
 
 """
 
-import urllib2, datetime, sys, PyRSS2Gen
+import urllib2, datetime, sys, re
+import PyRSS2Gen
 from BeautifulSoup import BeautifulSoup
 
 def getDetails(url, baseURL):
     page = urllib2.urlopen(url).read()
     soup = BeautifulSoup(page)
-    date = soup.findAll('div', {'class': 'STR_DateStrip'})[0].text
-    img = soup.findAll('div', {'class': 'STR_Image' })[0].find('img')['src'].replace('sunday.','').replace('strip.gif','strip.zoom.gif')
+    date = soup.findAll('date')[0].text
+    pubDate = datetime.datetime.strptime(date, "%A %B %d,%Y")
+    img = soup.findAll('div', {'class': 'img-comic-container' })[0].find('img')['src']
+
     results = {}
     results['item'] = PyRSS2Gen.RSSItem(
-        title = 'Comic for ' + date,
-        description = "<a href='" + url + "'><img src='" + baseURL + str(img) + "' /></a>",
-        pubDate = datetime.datetime.strptime(date,"%B %d, %Y"),
+        title = 'Dilbert comic for ' + pubDate.strftime("%B %d, %Y"),
+        description = "<a href='" + url + "'><img src='" + str(img) + "' /></a>",
+        pubDate = pubDate,
         link = url,
         guid = PyRSS2Gen.Guid(url)
     )
-    results['prev_href'] = soup.findAll('span', text='Previous')[0].parent.parent['href']
+    results['prev_href'] = soup.findAll('div', {'class': re.compile('nav-left')})[0].find('a')['href']
     return results
 
 url = 'http://dilbert.com'
 page = urllib2.urlopen(url).read()
 soup = BeautifulSoup(page)
-nextUrl = url + soup.findAll('div', {'class': 'STR_Image' })[0].find('a')['href']
+nextUrl = soup.findAll('div', {'class': re.compile('comic-item-container') })[0].find('a')['href']
 strips = []
 
 for i in range(0,10):
